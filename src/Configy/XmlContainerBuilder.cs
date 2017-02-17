@@ -9,7 +9,14 @@ namespace Configy
 {
 	public class XmlContainerBuilder
 	{
-		public IEnumerable<IContainer> GetContainers(IEnumerable<ContainerDefinition> definitions)
+		private readonly IContainerDefinitionVariablesReplacer _variablesReplacer;
+
+		public XmlContainerBuilder(IContainerDefinitionVariablesReplacer variablesReplacer)
+		{
+			_variablesReplacer = variablesReplacer;
+		}
+
+		public virtual IEnumerable<IContainer> GetContainers(IEnumerable<ContainerDefinition> definitions)
 		{
 			foreach (var definition in definitions)
 			{
@@ -19,17 +26,16 @@ namespace Configy
 			}
 		}
 
-		public IContainer GetContainer(ContainerDefinition definition)
+		public virtual IContainer GetContainer(ContainerDefinition definition)
 		{
+			_variablesReplacer.ReplaceVariables(definition);
+
 			var container = new MicroContainer(definition.Name, definition.Extends);
 			
 			foreach (XmlElement dependency in definition.Definition.ChildNodes.OfType<XmlElement>())
 			{
 				RegisterGenericConfigTypeByInterfaces(dependency, container);
 			}
-
-			// TODO: variables application
-			// TODO: tests on this class
 
 			return container;
 		}

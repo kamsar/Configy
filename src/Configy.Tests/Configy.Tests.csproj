@@ -83,7 +83,9 @@
     <Compile Include="Parsing\XmlContainerParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parsing\XmlInheritanceEngineTests.cs" />
-    <Compile Include="Parsing\XmlVariablesReplacerTests.cs" />
+    <Compile Include="Parsing\ContainerDefinitionVariablesReplacerTests.cs" />
+    <Compile Include="XmlContainerBuilderTestDependencies.cs" />
+    <Compile Include="XmlContainerBuilderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -48,10 +48,11 @@
     <Compile Include="Containers\MicroResolutionException.cs" />
     <Compile Include="Parsing\ContainerDefinition.cs" />
     <Compile Include="Parsing\IXmlInheritanceEngine.cs" />
+    <Compile Include="Parsing\IContainerDefinitionVariablesReplacer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parsing\XmlContainerParser.cs" />
     <Compile Include="Parsing\XmlInheritanceEngine.cs" />
-    <Compile Include="Parsing\XmlVariablesReplacer.cs" />
+    <Compile Include="Parsing\ContainerDefinitionVariablesReplacer.cs" />
     <Compile Include="XmlContainerBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

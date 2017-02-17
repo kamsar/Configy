@@ -24,7 +24,7 @@ namespace Configy.Containers
 		T Resolve<T>() where T : class;
 
 		/// <summary>
-		/// Resolves an instance of a type from a Type instance
+		/// Resolves an instance of a type from the container. The 
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -39,8 +39,10 @@ namespace Configy.Containers
 		void Register(Type type, Func<object> factory, bool singleInstance);
 
 		/// <summary>
-		/// Activates a type, using constructor injection for any registered dependencies
+		/// Activates a type, using constructor injection for any registered dependencies. This differs from Resolve because the type being activated need not be registered with the container.
 		/// </summary>
+		/// <param name="type">The type to activate an instance of. The container does not need to have the type registered.</param>
+		/// <param name="unmappedConstructorParameters">An array of constructor parameters which are not registered with the container (e.g. strings, bools, etc). Keys are argument names, values are argument values</param>
 		object Activate(Type type, KeyValuePair<string, object>[] unmappedConstructorParameters);
 	}
 }
