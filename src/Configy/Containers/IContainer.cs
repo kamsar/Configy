@@ -44,5 +44,11 @@ namespace Configy.Containers
 		/// <param name="type">The type to activate an instance of. The container does not need to have the type registered.</param>
 		/// <param name="unmappedConstructorParameters">An array of constructor parameters which are not registered with the container (e.g. strings, bools, etc). Keys are argument names, values are argument values</param>
 		object Activate(Type type, KeyValuePair<string, object>[] unmappedConstructorParameters);
+
+		void Assert(Type type);
+
+		void AssertSingleton(Type type);
+
+		void AssertTransient(Type type);
 	}
 }

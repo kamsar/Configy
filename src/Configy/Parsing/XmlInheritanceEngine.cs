@@ -8,7 +8,13 @@ namespace Configy.Parsing
 		public XmlElement ProcessInheritance(XmlElement source, XmlElement target)
 		{
 			var result = new XmlDocument();
-			result.LoadXml(source.OuterXml);
+
+			// when we load the result XML, we want to take the document element from the TARGET,
+			// because the root element does not inherit,
+			// but we want to start with the BODY of the SOURCE (and patch the target's children in as needed)
+			var targetRootNode = result.ImportNode(target, false);
+			result.AppendChild(targetRootNode);
+			targetRootNode.InnerXml = source.InnerXml;
 
 			foreach(XmlElement currentTargetNode in target.ChildNodes.OfType<XmlElement>())
 			{

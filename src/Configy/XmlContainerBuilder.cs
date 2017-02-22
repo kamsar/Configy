@@ -28,39 +28,22 @@ namespace Configy
 
 		public virtual IContainer GetContainer(ContainerDefinition definition)
 		{
-			_variablesReplacer.ReplaceVariables(definition);
+			_variablesReplacer?.ReplaceVariables(definition);
 
-			var container = new MicroContainer(definition.Name, definition.Extends);
+			var container = CreateContainer(definition);
 			
 			foreach (XmlElement dependency in definition.Definition.ChildNodes.OfType<XmlElement>())
 			{
-				RegisterGenericConfigTypeByInterfaces(dependency, container);
+				RegisterConfigTypeInterfaces(dependency, container);
 			}
 
 			return container;
 		}
 
 		/// <summary>
-		/// Registers an expected DI entry with the configuration. If the type is incorrect, or does not exist, an exception is thrown.
+		/// Registers a dependency entry with the container, using its interface(s) as the registrations
 		/// </summary>
-		protected virtual void RegisterExpectedConfigType<TResultType>(XmlElement dependency, IContainer container)
-			where TResultType : class
-		{
-			var type = GetConfigType(dependency);
-			var resultType = typeof(TResultType);
-
-			if (!resultType.IsAssignableFrom(type.Type))
-			{
-				throw new InvalidOperationException($"Invalid type for container node '{dependency.Name}' (expected '{typeof(TResultType).FullName}' implementation)");
-			}
-
-			RegisterGenericConfigTypeByInterfaces(dependency, container);
-		}
-
-		/// <summary>
-		/// Registers an ad-hoc DI entry with the container, using its interface(s) as the registrations
-		/// </summary>
-		protected virtual void RegisterGenericConfigTypeByInterfaces(XmlElement dependency, IContainer container)
+		protected virtual void RegisterConfigTypeInterfaces(XmlElement dependency, IContainer container)
 		{
 			var type = GetConfigType(dependency);
 			var interfaces = type.Type.GetInterfaces();
@@ -68,8 +51,16 @@ namespace Configy
 
 			foreach (var @interface in interfaces)
 			{
-				container.Register(@interface, () => container.Activate(type.Type, attributes), type.SingleInstance);
+				RegisterConfigTypeInterface(container, @interface, type, attributes, dependency);
 			}
+		}
+
+		/// <summary>
+		/// Registers a specific interface to a type with the container.
+		/// </summary>
+		protected virtual void RegisterConfigTypeInterface(IContainer container, Type interfaceType, TypeRegistration implementationRegistration, KeyValuePair<string, object>[] unmappedAttributes, XmlElement dependency)
+		{
+			container.Register(interfaceType, () => container.Activate(implementationRegistration.Type, unmappedAttributes), implementationRegistration.SingleInstance);
 		}
 
 		/// <summary>
@@ -131,6 +122,11 @@ namespace Configy
 			var attributeItem = node?.Attributes?[attribute];
 
 			return attributeItem?.InnerText;
+		}
+
+		protected virtual IContainer CreateContainer(ContainerDefinition definition)
+		{
+			return new MicroContainer(definition.Name, definition.Extends);
 		}
 
 		protected class TypeRegistration

@@ -21,7 +21,7 @@ namespace Configy.Containers
 		public string Extends { get; }
 
 		/// <summary>
-		/// Resolves a registered type with its dependencies. Note: to activate unregistered types and inject dependencies use Activate() instead.
+		/// Resolves a type with its dependencies. If the type is not registered, it is activated using Activate() automatically.
 		/// </summary>
 		/// <typeparam name="T">Type to resolve</typeparam>
 		/// <returns></returns>
@@ -59,6 +59,12 @@ namespace Configy.Containers
 			return null;
 		}
 
+		/// <summary>
+		/// Adds a type to the container
+		/// </summary>
+		/// <param name="type">The type to register</param>
+		/// <param name="factory">A factory function that creates the type instance to resolve to</param>
+		/// <param name="singleInstance">If true, the object is a singleton. Otherwise the factory is called every time it is resolved.</param>
 		public virtual void Register(Type type, Func<object> factory, bool singleInstance)
 		{
 			if (singleInstance)
@@ -69,6 +75,27 @@ namespace Configy.Containers
 			{
 				_transients.TryAdd(type, factory);
 			}
+		}
+
+		public virtual void Assert(Type type)
+		{
+			if (_singletons.ContainsKey(type) || _transients.ContainsKey(type)) return;
+
+			throw new InvalidOperationException($"The expected type {type.FullName} was not registered with the container.");
+		}
+
+		public virtual void AssertSingleton(Type type)
+		{
+			if (_singletons.ContainsKey(type)) return;
+
+			throw new InvalidOperationException($"The expected type {type.FullName} was not registered with the container or was not a singleInstance.");
+		}
+
+		public virtual void AssertTransient(Type type)
+		{
+			if (_transients.ContainsKey(type)) return;
+
+			throw new InvalidOperationException($"The expected type {type.FullName} was not registered with the container or was a singleInstance.");
 		}
 
 		/// <summary>

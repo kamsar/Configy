@@ -112,6 +112,47 @@ namespace Configy.Tests.Parsing
 			result.OuterXml.Should().Be(@"<config><element type=""foo""><cfg /><cfg /></element></config>");
 		}
 
+		[Fact]
+		public void ProcessInheritance_ShouldPreserveRootAttributeOnTarget()
+		{
+			var source = CreateTestNode(@"<config><element></element></config>");
+			var target = CreateTestNode(@"<config name=""Foo""><element></element></config>");
+
+			var sut = new XmlInheritanceEngine();
+
+			var result = sut.ProcessInheritance(source, target);
+
+			result.OuterXml.Should().Be(@"<config name=""Foo""><element></element></config>");
+		}
+
+		[Fact]
+		public void ProcessInheritance_ShouldPreserveRootAttributeOnTarget_WhenRootTagNamesAreDifferent()
+		{
+			var source = CreateTestNode(@"<defaults><element></element></defaults>");
+			var target = CreateTestNode(@"<config name=""Foo""><element></element></config>");
+
+			var sut = new XmlInheritanceEngine();
+
+			var result = sut.ProcessInheritance(source, target);
+
+			result.OuterXml.Should().Be(@"<config name=""Foo""><element></element></config>");
+		}
+
+		[Fact]
+		public void ProcessInheritance_MultilayerInheritanceTest()
+		{
+			var defaults = CreateTestNode(@"<defaults><dep1 type=""Foo, Foo"" /></defaults>");
+			var abs = CreateTestNode(@"<config name=""Foo"" abstract=""true""><dep2 type=""Bar, Bar"" /></config>");
+			var target = CreateTestNode(@"<config name=""Bar""><dep3 type=""Baz, Baz"" /></config>");
+
+			var sut = new XmlInheritanceEngine();
+
+			var result = sut.ProcessInheritance(sut.ProcessInheritance(defaults, abs), target);
+
+
+			result.OuterXml.Should().Be(@"<config name=""Bar""><dep1 type=""Foo, Foo"" /><dep2 type=""Bar, Bar"" /><dep3 type=""Baz, Baz"" /></config>");
+		}
+
 		private XmlElement CreateTestNode(string xml)
 		{
 			var doc = new XmlDocument();

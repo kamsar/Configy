@@ -48,6 +48,18 @@ namespace Configy.Tests.Containers
 		}
 
 		[Fact]
+		public void ResolvesType_WhenTypeIsNotRegistered()
+		{
+			var micro = CreateTestContainer();
+
+			micro.Register(typeof(ITest), () => new Test(), true);
+
+			var instance = micro.Resolve<TestDependencyParameter>();
+
+			Assert.NotNull(instance);
+		}
+
+		[Fact]
 		public void ResolvesType_AsInstance()
 		{
 			var micro = CreateTestContainer();
@@ -77,6 +89,32 @@ namespace Configy.Tests.Containers
 			var instance2 = micro.Resolve<IUniqueTestInstance>();
 
 			Assert.Equal(instance.InstanceGuid, instance2.InstanceGuid);
+		}
+
+		[Fact]
+		public void AssertsType_AsInstance()
+		{
+			var type = typeof(IUniqueTestInstance);
+			var micro = CreateTestContainer();
+
+			micro.Register(type, () => new UniqueTestInstance(), singleInstance: false);
+
+			Assert.Throws<InvalidOperationException>(() => micro.AssertSingleton(type));
+			micro.AssertTransient(type);
+			micro.Assert(type);
+		}
+
+		[Fact]
+		public void AssertsType_AsSingleton()
+		{
+			var type = typeof(IUniqueTestInstance);
+			var micro = CreateTestContainer();
+
+			micro.Register(type, () => new UniqueTestInstance(), singleInstance: true);
+
+			Assert.Throws<InvalidOperationException>(() => micro.AssertTransient(type));
+			micro.AssertSingleton(type);
+			micro.Assert(type);
 		}
 
 		private MicroContainer CreateTestContainer()
