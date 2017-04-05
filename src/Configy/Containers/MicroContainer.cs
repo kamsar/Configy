@@ -88,14 +88,18 @@ namespace Configy.Containers
 		{
 			if (_singletons.ContainsKey(type)) return;
 
-			throw new InvalidOperationException($"The expected type {type.FullName} was not registered with the container or was not a singleInstance.");
+			if(_transients.ContainsKey(type)) throw new InvalidOperationException($"{type.FullName} was registered with the {Name} container but it was expected to be a singleton and was not (singleInstance=false or undefined).");
+
+			throw new InvalidOperationException($"The expected type {type.FullName} was not registered with the {Name} container.");
 		}
 
 		public virtual void AssertTransient(Type type)
 		{
 			if (_transients.ContainsKey(type)) return;
 
-			throw new InvalidOperationException($"The expected type {type.FullName} was not registered with the container or was a singleInstance.");
+			if (_singletons.ContainsKey(type)) throw new InvalidOperationException($"{type.FullName} was registered with the {Name} container but it was expected to be a transient and was not (singleInstance=true).");
+
+			throw new InvalidOperationException($"The expected type {type.FullName} was not registered with the {Name} container.");
 		}
 
 		/// <summary>
