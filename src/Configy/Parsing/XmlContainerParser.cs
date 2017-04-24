@@ -84,7 +84,7 @@ namespace Configy.Parsing
 				added.Add(current.Name);
 			}
 
-			if (iterationCount == MaxInheritanceIterations) throw new InvalidOperationException("There is an extends inheritance loop, or a container extending a nonexistant container. Unresolved containers probably at fault: " + string.Join(", ", processQueue.Select(container => container.Name)));
+			if (iterationCount == MaxInheritanceIterations) throw new InvalidOperationException("There is an extends inheritance loop, or a container extending a nonexistant container name. Unresolved containers probably at fault: " + string.Join(", ", processQueue.Select(container => container.Name)));
 
 			return result.ToArray();
 		}
