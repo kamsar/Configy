@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Configy.Tests</RootNamespace>
     <AssemblyName>Configy.Tests</AssemblyName>
-	  <TargetFrameworks>net472;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+	  <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
   </PropertyGroup>
