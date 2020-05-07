@@ -4,9 +4,17 @@
     <RootNamespace>Configy</RootNamespace>
     <AssemblyName>Configy</AssemblyName>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Authors>Kam Figy</Authors>
+    <Description>Inherited IoC container configuration management library.</Description>
     <VersionPrefix>1.1.0</VersionPrefix>
     <VersionSuffix>pre01</VersionSuffix>
+    <Copyright>©2020 Kam Figy</Copyright>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/kamsar/Configy</RepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
